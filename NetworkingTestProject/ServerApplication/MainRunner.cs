@@ -4,7 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NetworkingTestProjectLibrary;
 using NetworkingTestProjectLibrary.Entities;
+using NetworkingTestProjectLibrary.Entities.Blocks;
+using NetworkingTestProjectLibrary.Misc;
 
 namespace ServerApplication
 {
@@ -13,17 +16,20 @@ namespace ServerApplication
         public static EntityList eList;
         public static ServerHandler serverHandler;
         public static GameManager gm;
+        public static GameMap gMap;
 
         static void Main(string[] args)
         {
             //initialize variables
-            eList = new EntityList();
-            serverHandler = new ServerHandler(eList);
+            gMap = new GameMap(100, 100);
+            MapGenerator.generateMap(gMap);
+            eList = new EntityList(gMap);
+            serverHandler = new ServerHandler(eList, gMap);
             gm = new GameManager(eList, serverHandler);
 
             //main game loop (server)
             long lastTime = nanoTime();
-            double amountOfTicks = 60.0;
+            double amountOfTicks = GlobalVariables.SERVER_TICK_RATE;
             double ns = 1000000000 / amountOfTicks;
             double delta = 0;
             long timer = currentTimeMillis();

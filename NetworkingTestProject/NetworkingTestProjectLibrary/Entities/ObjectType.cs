@@ -15,7 +15,8 @@ namespace NetworkingTestProjectLibrary.Entities
             Mob = 1,
             Item = 2,
             Projectile = 3,
-            Particle = 4
+            Particle = 4,
+            Block = 5
         }
 
     }

@@ -7,3 +7,17 @@ C:\Users\danie\source\repos\NetworkingTestProject\NetworkingTestProjectLibrary\o
 C:\Users\danie\source\repos\NetworkingTestProject\NetworkingTestProjectLibrary\obj\Debug\NetworkingTestProjectLibrary.dll
 C:\Users\danie\source\repos\NetworkingTestProject\NetworkingTestProjectLibrary\obj\Debug\NetworkingTestProjectLibrary.pdb
 C:\Users\danie\source\repos\NetworkingTestProject\NetworkingTestProjectLibrary\obj\Debug\NetworkingTestProjectLibrary.csprojAssemblyReference.cache
+C:\Users\danie\source\repos\NetworkingTestProject\NetworkingTestProjectLibrary\bin\Debug\MonoGame.Framework.dll
+C:\Users\danie\source\repos\NetworkingTestProject\NetworkingTestProjectLibrary\bin\Debug\SharpDX.DXGI.dll
+C:\Users\danie\source\repos\NetworkingTestProject\NetworkingTestProjectLibrary\bin\Debug\SharpDX.dll
+C:\Users\danie\source\repos\NetworkingTestProject\NetworkingTestProjectLibrary\bin\Debug\SharpDX.Direct3D11.dll
+C:\Users\danie\source\repos\NetworkingTestProject\NetworkingTestProjectLibrary\bin\Debug\SharpDX.MediaFoundation.dll
+C:\Users\danie\source\repos\NetworkingTestProject\NetworkingTestProjectLibrary\bin\Debug\SharpDX.Direct2D1.dll
+C:\Users\danie\source\repos\NetworkingTestProject\NetworkingTestProjectLibrary\bin\Debug\SharpDX.XAudio2.dll
+C:\Users\danie\source\repos\NetworkingTestProject\NetworkingTestProjectLibrary\bin\Debug\MonoGame.Framework.xml
+C:\Users\danie\source\repos\NetworkingTestProject\NetworkingTestProjectLibrary\bin\Debug\SharpDX.DXGI.xml
+C:\Users\danie\source\repos\NetworkingTestProject\NetworkingTestProjectLibrary\bin\Debug\SharpDX.xml
+C:\Users\danie\source\repos\NetworkingTestProject\NetworkingTestProjectLibrary\bin\Debug\SharpDX.Direct3D11.xml
+C:\Users\danie\source\repos\NetworkingTestProject\NetworkingTestProjectLibrary\bin\Debug\SharpDX.MediaFoundation.xml
+C:\Users\danie\source\repos\NetworkingTestProject\NetworkingTestProjectLibrary\bin\Debug\SharpDX.Direct2D1.xml
+C:\Users\danie\source\repos\NetworkingTestProject\NetworkingTestProjectLibrary\bin\Debug\SharpDX.XAudio2.xml

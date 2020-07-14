@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NetworkingTestProject.Content;
+using NetworkingTestProject.Misc;
 using NetworkingTestProject.Networking;
 using NetworkingTestProjectLibrary.Entities;
 using NetworkingTestProjectLibrary.Entities.Characters;
+using NetworkingTestProjectLibrary.Misc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,44 +16,44 @@ namespace NetworkingTestProject.Entities
 {
     class EntityHandler
     {
+        private Camera camera;
         private EntityList eList;
         private ClientHandler cHandler;
 
-        public EntityHandler(EntityList eList, ClientHandler cHandler)
+        public EntityHandler(Camera camera, EntityList eList, ClientHandler cHandler)
         {
+            this.camera = camera;
             this.eList = eList;
             this.cHandler = cHandler;
         }
 
         public void tick(float gTime)
         {
-            //client-side "fake" linear interpolation
+            //client-side linear interpolation for player position
             for (int i = 0; i < eList.playerList.Count; i++)
             {
                 Player tempPlayer = (Player)eList.playerList[i];
-                /*
-                tempPlayer.x += tempPlayer.vx * (20f * gTime);
-                tempPlayer.y += tempPlayer.vy * (20f * gTime);*/
-                tempPlayer.x = MathHelper.Lerp(tempPlayer.lastPlayerState.x, tempPlayer.currentPlayerState.x, cHandler.timeSinceLastUpdate * 60);
-                tempPlayer.y = MathHelper.Lerp(tempPlayer.lastPlayerState.y, tempPlayer.currentPlayerState.y, cHandler.timeSinceLastUpdate * 60);
+                tempPlayer.x = MathHelper.Lerp(tempPlayer.lastState.x, tempPlayer.currentState.x, cHandler.timeSinceLastUpdate * GlobalVariables.SERVER_TICK_RATE);
+                tempPlayer.y = MathHelper.Lerp(tempPlayer.lastState.y, tempPlayer.currentState.y, cHandler.timeSinceLastUpdate * GlobalVariables.SERVER_TICK_RATE);
+
+                if (tempPlayer.getUsername().Equals(Game1.CLIENTUSERNAME))
+                {
+                    camera.follow(tempPlayer.x, tempPlayer.y, tempPlayer.sizeX, tempPlayer.sizeY, gTime);
+                }
             }
-            
+
+            for (int i = 0; i < eList.projectileList.Count; i++)
+            {
+                GameObject obj = (GameObject)eList.projectileList[i];
+                obj.tickAsClient(gTime);
+            }
+
             cHandler.timeSinceLastUpdate += gTime;
         }
 
         public void render(SpriteBatch sb)
         {
-            for (int i = 0; i < eList.playerList.Count; i++)
-            {
-                Player tempPlayer = (Player)eList.playerList[i];
-
-                int x = (int)tempPlayer.x;
-                int y = (int)tempPlayer.y;
-                int sizeY = (int)tempPlayer.sizeY;
-                int sizeX = (int)tempPlayer.sizeX;
-
-                sb.Draw(TextureManager.blank_texture, destinationRectangle: new Rectangle(x, y, sizeX, sizeY), color: Color.White);
-            }
+            eList.render(sb, camera.getX(), camera.getY());
         }
 
     }

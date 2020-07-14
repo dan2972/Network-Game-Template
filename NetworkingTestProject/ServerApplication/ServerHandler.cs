@@ -1,5 +1,6 @@
 ﻿using Lidgren.Network;
 using NetworkingTestProjectLibrary.Entities;
+using NetworkingTestProjectLibrary.Entities.Blocks;
 using NetworkingTestProjectLibrary.Entities.Characters;
 using System;
 using System.Collections.Generic;
@@ -17,10 +18,12 @@ namespace ServerApplication
         private NetPeerConfiguration config;
 
         private EntityList eList;
+        private GameMap gMap;
 
-        public ServerHandler(EntityList eList)
+        public ServerHandler(EntityList eList, GameMap gMap)
         {
             this.eList = eList;
+            this.gMap = gMap;
 
             config = new NetPeerConfiguration("NetworkTestGame")
             { Port = 14242 };
@@ -68,16 +71,34 @@ namespace ServerApplication
                             string name = message.ReadString();
                             float x = message.ReadFloat();
                             float y = message.ReadFloat();
-                            eList.addPlayer(new Player(x, y, name, eList));
+                            eList.addPlayer(new Player(x, y, name, gMap, eList));
                             for (int i = 0; i < eList.playerList.Count; i++)
                             {
                                 Player tempPlayer = (Player)eList.playerList[i];
                                 NetOutgoingMessage outMsg = server.CreateMessage();
                                 outMsg.Write("create player");
-                                outMsg.Write(tempPlayer.name);
+                                outMsg.Write(tempPlayer.username);
                                 outMsg.Write(tempPlayer.x);
                                 outMsg.Write(tempPlayer.y);
                                 server.SendToAll(outMsg, NetDeliveryMethod.ReliableOrdered);
+                            }
+                        }
+                        else if (headerMsg.Equals("player ability use"))
+                        {
+                            string playerName = message.ReadString();
+                            string abilityType = message.ReadString();
+                            int mx = message.ReadInt32();
+                            int my = message.ReadInt32();
+                            for (int i = 0; i < eList.playerList.Count; i++)
+                            {
+                                Player tempPlayer = (Player)eList.playerList[i];
+                                if (playerName.Equals(tempPlayer.getUsername()))
+                                {
+                                    if (abilityType.Equals("primary"))
+                                    {
+                                        tempPlayer.usePrimary(mx, my, server);
+                                    }
+                                }
                             }
                         }
                         else if (headerMsg.Equals("disconnected"))
@@ -86,9 +107,10 @@ namespace ServerApplication
                             for (int i = 0; i < eList.playerList.Count; i++)
                             {
                                 Player tempPlayer = (Player)eList.playerList[i];
-                                if (tempPlayer.name == name)
+                                if (name.Equals(tempPlayer.getUsername()))
                                 {
                                     eList.removePlayer(tempPlayer);
+                                    Console.WriteLine("removed player " + name);
                                 }
                             }
                             NetOutgoingMessage outMsg = server.CreateMessage();
@@ -104,7 +126,7 @@ namespace ServerApplication
                             for (int i = 0; i < eList.playerList.Count; i++)
                             {
                                 Player tempPlayer = (Player)eList.playerList[i];
-                                if (name == tempPlayer.getName())
+                                if (name.Equals(tempPlayer.getUsername()))
                                 {
                                     if (direction.Equals("left"))
                                         tempPlayer.movingLeft = b;

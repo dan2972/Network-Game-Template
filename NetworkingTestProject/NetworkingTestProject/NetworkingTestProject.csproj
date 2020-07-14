@@ -45,8 +45,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Content\TextureManager.cs" />
     <Compile Include="Entities\EntityHandler.cs" />
+    <Compile Include="Misc\Camera.cs" />
     <Compile Include="Misc\InputManager.cs" />
     <Compile Include="Networking\ClientHandler.cs" />
     <Compile Include="Runner\Game1.cs" />

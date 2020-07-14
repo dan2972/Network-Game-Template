@@ -1,4 +1,6 @@
-﻿using NetworkingTestProjectLibrary.Entities.Characters;
+﻿using Microsoft.Xna.Framework.Graphics;
+using NetworkingTestProjectLibrary.Entities.Blocks;
+using NetworkingTestProjectLibrary.Entities.Characters;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,8 +17,15 @@ namespace NetworkingTestProjectLibrary.Entities
         public ArrayList particleList { get; set; }
         public ArrayList projectileList { get; set; }
 
-        public EntityList()
+        public int particleIDCounter = 0;
+        public int projectileIDCounter = 0;
+
+        private GameMap gMap;
+
+        public EntityList(GameMap gMap)
         {
+            this.gMap = gMap;
+
             playerList = new ArrayList();
             particleList = new ArrayList();
             projectileList = new ArrayList();
@@ -41,6 +50,26 @@ namespace NetworkingTestProjectLibrary.Entities
             }
         }
 
+        public void render(SpriteBatch sb, float camX, float camY)
+        {
+            for (int i = 0; i < playerList.Count; i++)
+            {
+                GameObject obj = (GameObject)playerList[i];
+                obj.render(sb);
+            }
+            gMap.render(sb, camX, camY);
+            for (int i = 0; i < particleList.Count; i++)
+            {
+                GameObject obj = (GameObject)particleList[i];
+                obj.render(sb);
+            }
+            for (int i = 0; i < projectileList.Count; i++)
+            {
+                GameObject obj = (GameObject)projectileList[i];
+                obj.render(sb);
+            }
+        }
+
         public void addPlayer(Player p)
         {
             playerList.Add(p);
@@ -52,12 +81,15 @@ namespace NetworkingTestProjectLibrary.Entities
             {
                 case ObjectType.ID.Particle:
                     particleList.Add(obj);
+                    particleIDCounter++;
                     break;
                 case ObjectType.ID.Projectile:
                     projectileList.Add(obj);
+                    projectileIDCounter++;
                     break;
                 default:
                     particleList.Add(obj);
+                    particleIDCounter++;
                     break;
             }
         }
@@ -80,6 +112,19 @@ namespace NetworkingTestProjectLibrary.Entities
                 default:
                     particleList.Remove(obj);
                     break;
+            }
+        }
+
+        public int getUsableID(ObjectType.ID id)
+        {
+            switch (id)
+            {
+                case ObjectType.ID.Particle:
+                    return particleIDCounter;
+                case ObjectType.ID.Projectile:
+                    return projectileIDCounter;
+                default:
+                    return particleIDCounter;
             }
         }
 

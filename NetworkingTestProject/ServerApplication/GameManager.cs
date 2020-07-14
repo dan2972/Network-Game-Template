@@ -30,16 +30,25 @@ namespace ServerApplication
                 Player tempPlayer = (Player)eList.playerList[i];
                 NetOutgoingMessage requestUpdate = sHandler.server.CreateMessage();
                 requestUpdate.Write("update player position");
-                requestUpdate.Write(tempPlayer.name);
+                requestUpdate.Write(tempPlayer.username);
                 requestUpdate.Write(tempPlayer.x);
                 requestUpdate.Write(tempPlayer.y);
-                requestUpdate.Write(tempPlayer.vx);
-                requestUpdate.Write(tempPlayer.vy);
                 requestUpdate.Write(tempPlayer.movingLeft);
                 requestUpdate.Write(tempPlayer.movingRight);
                 requestUpdate.Write(tempPlayer.jumpPressed);
                 sHandler.server.SendToAll(requestUpdate, NetDeliveryMethod.Unreliable);
             }
+            /*
+            for (int i = 0; i < eList.projectileList.Count; i++)
+            {
+                GameObject obj = (GameObject)eList.projectileList[i];
+                NetOutgoingMessage requestUpdate = sHandler.server.CreateMessage();
+                requestUpdate.Write("update projectile position");
+                requestUpdate.Write(obj.uniqueID);
+                requestUpdate.Write(obj.x);
+                requestUpdate.Write(obj.y);
+                sHandler.server.SendToAll(requestUpdate, NetDeliveryMethod.Unreliable);
+            }*/
         }
 
     }

@@ -35,8 +35,10 @@
     <Reference Include="Lidgren.Network, Version=2012.1.7.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Lidgren.Network.1.0.2\lib\net451\Lidgren.Network.dll</HintPath>
     </Reference>
+    <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,16 +47,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Calculations\CollisionDetector.cs" />
+    <Compile Include="Content\TextureLibrary.cs" />
+    <Compile Include="Entities\Blocks\CollidingBlock.cs" />
+    <Compile Include="Entities\Blocks\GameMap.cs" />
+    <Compile Include="Entities\Blocks\MapGenerator.cs" />
     <Compile Include="Entities\Characters\Player.cs" />
     <Compile Include="Entities\EntityState.cs" />
     <Compile Include="Entities\GameObject.cs" />
     <Compile Include="Entities\EntityList.cs" />
     <Compile Include="Entities\ObjectType.cs" />
+    <Compile Include="Entities\Projectiles\Commander\CommanderBullet.cs" />
+    <Compile Include="Misc\GlobalVariables.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Calculations\" />
-    <Folder Include="Entities\Blocks\" />
     <Folder Include="Entities\Mobs\" />
   </ItemGroup>
   <ItemGroup>

@@ -8,7 +8,11 @@ using NetworkingTestProjectLibrary.Entities;
 using NetworkingTestProject.Entities;
 using NetworkingTestProject.Misc;
 using NetworkingTestProjectLibrary.Entities.Characters;
+using NetworkingTestProjectLibrary.Misc;
 using System;
+using NetworkingTestProjectLibrary.Entities.Blocks;
+using NetworkingTestProjectLibrary;
+using System.Threading.Tasks;
 
 namespace NetworkingTestProject
 {
@@ -23,6 +27,8 @@ namespace NetworkingTestProject
 
         private EntityList entityList;
         private EntityHandler entityHandler;
+        private GameMap gMap;
+        private Camera camera;
 
         private ClientHandler clientHandler;
         private InputManager inputManager;
@@ -37,6 +43,7 @@ namespace NetworkingTestProject
         {
             this.IsMouseVisible = true;
 
+            //tweak graphics variables
             graphics.PreferredBackBufferWidth = TRUEGAMEWIDTH;
             graphics.PreferredBackBufferHeight = TRUEGAMEHEIGHT;
             //graphics.IsFullScreen = true;
@@ -45,10 +52,15 @@ namespace NetworkingTestProject
             IsFixedTimeStep = false;
             graphics.ApplyChanges();
 
+            GlobalVariables.GAME_SCALE = (float)TRUEGAMEWIDTH / (float)GlobalVariables.GAME_WIDTH;
+
             //initialize variables
-            entityList = new EntityList();
-            clientHandler = new ClientHandler(entityList, inputManager);
-            entityHandler = new EntityHandler(entityList, clientHandler);
+            gMap = new GameMap(100,100);
+            MapGenerator.generateMap(gMap);
+            camera = new Camera();
+            entityList = new EntityList(gMap);
+            clientHandler = new ClientHandler(entityList, gMap, inputManager);
+            entityHandler = new EntityHandler(camera, entityList, clientHandler);
 
             //take input from user to create a username
             System.Console.WriteLine("Enter a name for the player");
@@ -56,10 +68,10 @@ namespace NetworkingTestProject
             CLIENTUSERNAME = playerName;
 
             //create and add a new player
-            Player player = new Player(100, 100, CLIENTUSERNAME, entityList);
+            Player player = new Player(100, 100, CLIENTUSERNAME, gMap, entityList);
             entityList.addPlayer(player);
             //initialize input manager for the player
-            inputManager = new InputManager(player, clientHandler);
+            inputManager = new InputManager(player, camera, entityList, clientHandler);
 
             requestPlayerCreation();
 
@@ -70,12 +82,12 @@ namespace NetworkingTestProject
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            TextureManager.loadTextures(Content);
+            TextureLibrary.loadTextures(Content);
         }
 
         protected override void UnloadContent()
         {
-            TextureManager.unloadTextures();
+            TextureLibrary.unloadTextures();
             Content.Unload();
         }
 
@@ -83,29 +95,41 @@ namespace NetworkingTestProject
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
-                NetOutgoingMessage disconnectMsg = clientHandler.client.CreateMessage();
-                disconnectMsg.Write("disconnected");
-                disconnectMsg.Write(CLIENTUSERNAME);
-                clientHandler.sendMessage(disconnectMsg, NetDeliveryMethod.ReliableOrdered);
-                clientHandler.client.Shutdown("Bye server..");
                 Exit();
             }
             float gTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            inputManager.readInput();
+            if (IsActive)
+            {
+                inputManager.readInput(gTime);
+            }
 
             clientHandler.update();
 
             entityHandler.tick(gTime);
 
+            //Console.WriteLine(entityList.projectileList.Count);
+
             base.Update(gameTime);
+        }
+
+        protected override void OnExiting(Object sender, EventArgs args)
+        {
+            NetOutgoingMessage disconnectMsg = clientHandler.client.CreateMessage();
+            disconnectMsg.Write("disconnected");
+            disconnectMsg.Write(CLIENTUSERNAME);
+            clientHandler.sendMessage(disconnectMsg, NetDeliveryMethod.ReliableOrdered);
+            Task.Delay(1000);
+            clientHandler.client.Shutdown("Bye server..");
+
+            base.OnExiting(sender, args);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, null);
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, camera.getTransform());
 
             entityHandler.render(spriteBatch);
 
