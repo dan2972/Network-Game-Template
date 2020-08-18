@@ -38,9 +38,7 @@ namespace NetworkingTestProject.Networking
             approval.Write("approval message");
 
             //127.0.0.1    local
-            //172.30.1.32  dan's laptop ip
-            //25.64.92.236 hamachi ip
-            client.Connect("211.199.156.182", 14242, approval);
+            client.Connect("127.0.0.1 ", 14242, approval);
 
         }
 
